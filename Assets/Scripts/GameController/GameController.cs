@@ -45,6 +45,9 @@ public class GameController : MonoBehaviour
     //Rotación de la cámara en el puzzle del Mapa
     public Vector3 MapaCameraPosition;
 
+    //Rotacióin de la cámara en el puzzle de la Caja Misteriosa
+    public Vector3 MysteryBoxCameraPosition;
+
     //Lista de puzzles
     public List<Transform> puzzleTargets;
 
@@ -145,6 +148,8 @@ public class GameController : MonoBehaviour
 
         if (transitioning)
         {
+            //Hay que descomentar esto cuando terminemos de el puzzle de la caja misteriosa
+            /*
             if (GyroScopeController.THIS.insideGyro == true)
             {
                 //Usa la función Lerp para mover la cámara gradualmente hacia la posición del objeto vacío
@@ -198,6 +203,24 @@ public class GameController : MonoBehaviour
                     //int currentCullingMask = mainCamera.cullingMask;
                     //int newLayerMask = currentCullingMask | (1 << LayerMask.NameToLayer("Hover"));
                     //mainCamera.cullingMask = newLayerMask;
+                }
+            }
+             */
+
+            if (MysteryBoxController.THIS.insideMysteryBox == true)
+            {
+                //Usa la función Lerp para mover la cámara gradualmente hacia la posición del objeto vacío
+                playerCamera.transform.position = Vector3.Lerp(playerCamera.transform.position, puzzleTargets[3].position, speed * Time.deltaTime);
+
+                //La distancia entre la cámara y el objeto vacío es menor a una tolerancia pequeña
+                if (Vector3.Distance(playerCamera.transform.position, puzzleTargets[3].position) < 0.01f)
+                {
+                    EnterPuzzle();
+                    Debug.Log("Ha terminado la transición");
+                    Debug.Log("Has entrado en el puzzle de la Caja Misteriosa");
+                    MysteryBoxController.THIS.controlPuzzle= true;
+                    Quaternion mysteryBoxRotation = Quaternion.Euler(MysteryBoxCameraPosition);
+                    playerCamera.transform.rotation = mysteryBoxRotation;
                 }
             }
         }
@@ -265,11 +288,13 @@ public class GameController : MonoBehaviour
 
     void ExitPuzzle()
     {
-        GyroScopeController.THIS.controlPuzzle = false;
+        //GyroScopeController.THIS.controlPuzzle = false;
 
-        CryptexController.THIS.controlPuzzle = false;
+       //CryptexController.THIS.controlPuzzle = false;
 
-        MapaController.THIS.controlPuzzle = false;
+        //MapaController.THIS.controlPuzzle = false;
+
+        MysteryBoxController.THIS.controlPuzzle = false;
 
         backtransitioning = false;
 

@@ -2984,6 +2984,7 @@ MonoBehaviour:
   GyroCameraPositon: {x: 10, y: 90, z: 0}
   CryptexCameraPosition: {x: 90, y: -180, z: 0}
   MapaCameraPosition: {x: 30, y: -90, z: 0}
+  MysteryBoxCameraPosition: {x: 0, y: 0, z: 0}
   puzzleTargets:
   - {fileID: 6956361596001520158}
   - {fileID: 4445432291695230986}

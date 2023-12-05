@@ -33,7 +33,7 @@ public class GyroScopeController : MonoBehaviour
     {
         result = new int[] { 0, 0, 0 };
         correctCombination = new int[] { 4, 2, 3};
-        coroutineAllowed = true;
+        coroutineAllowed = true;       
     }
 
     private void Awake()
