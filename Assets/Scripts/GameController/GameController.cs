@@ -25,6 +25,8 @@ public class GameController : MonoBehaviour
 
     [Header("Puzzles")]
 
+    public List<GameObject> Puzzles;
+
     //Dentro del puzzle
     public bool insidePuzzle = false;
 
@@ -80,8 +82,7 @@ public class GameController : MonoBehaviour
     // Start is called before the first frame update
     private void Start()
     {
-        //player.transform.position = startPosition.position;
-        //player.transform.rotation = Quaternion.Euler(new Vector2(0, 90));
+            
     }
     void Awake()
     {      
@@ -211,6 +212,7 @@ public class GameController : MonoBehaviour
             {
                 //Usa la función Lerp para mover la cámara gradualmente hacia la posición del objeto vacío
                 playerCamera.transform.position = Vector3.Lerp(playerCamera.transform.position, puzzleTargets[3].position, speed * Time.deltaTime);
+                //playerCamera.transform.LookAt(Puzzles[3].transform);
 
                 //La distancia entre la cámara y el objeto vacío es menor a una tolerancia pequeña
                 if (Vector3.Distance(playerCamera.transform.position, puzzleTargets[3].position) < 0.01f)
