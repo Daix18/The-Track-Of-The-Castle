@@ -115,8 +115,7 @@ public class PiezasMapa : MonoBehaviour
     private Vector3 GetTargetPosition()
     {
         Plane plane = new Plane(Vector3.forward, transform.position);
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        float distance;
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);        
         if (Physics.Raycast(ray,out RaycastHit hit, 10 , mesa))
         {
             Vector3 targetPosition = hit.point;
