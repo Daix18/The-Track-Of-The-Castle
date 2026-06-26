@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: testItem
   m_EditorClassIdentifier: 
   _itemName: test
-  _itemIcon: {fileID: 0}
-  _itemModel: {fileID: 0}
+  _itemIcon: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+  _itemModel: {fileID: 2629474638263860203, guid: 57340913c5340084b8df0f27107f894e, type: 3}
   _itemDescription: test
   _itemID: 0
