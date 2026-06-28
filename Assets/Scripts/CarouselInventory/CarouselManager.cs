@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Collections;
 using UnityEngine;
 
 public class CarouselManager : MonoBehaviour
@@ -49,6 +50,7 @@ public class CarouselManager : MonoBehaviour
             GameObject spawnItem = Instantiate(_placeholderPrefab, transform);
             spawnItem.transform.localPosition = pos;
             spawnItem.transform.localRotation = Quaternion.identity;
+            spawnItem.layer = LayerMask.NameToLayer("Carousel");
             _spawnedItems.Add(spawnItem);
         }
     }
@@ -63,6 +65,7 @@ public class CarouselManager : MonoBehaviour
     void OpenCarousel()
     {
         GetInventorySlot();
+        StartCoroutine(OpenAnimation(Camera.main.transform.position, transform.position));
         _isOpen = true;
         FirstPersonController.THIS.enabled = false;
         FirstPersonController.THIS.GetComponent<CharacterController>().enabled = false;
@@ -78,5 +81,28 @@ public class CarouselManager : MonoBehaviour
         FirstPersonController.THIS.GetComponent<CharacterController>().enabled = true;
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
+    }
+
+    IEnumerator OpenAnimation(Vector3 startPos, Vector3 targetPos)
+    {
+        float duration = 0.5f;
+        float elapsed = 0f;
+
+        startPos = Camera.main.transform.position + Camera.main.transform.forward * _distanceFromCamera;
+
+        transform.localScale = Vector3.zero;
+        transform.position = startPos;
+
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            float progress = elapsed / duration;
+            transform.position = Vector3.Lerp(startPos, targetPos, progress);
+            transform.localScale = Vector3.Lerp(Vector3.zero, Vector3.one, progress);
+            yield return null;
+        }
+
+        transform.position = targetPos;
+        transform.localScale = Vector3.one;
     }
 }
