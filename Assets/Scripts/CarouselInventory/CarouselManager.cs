@@ -8,12 +8,16 @@ public class CarouselManager : MonoBehaviour
 
     public GameObject _placeholderPrefab;
 
+    public Transform _carouselRing;
+
     public float _spacing = 1.5f;
     public float _maxRadius = 5f;
 
     public float _distanceFromCamera = 2f;
 
     bool _isOpen = false;
+
+    int _currentIndex = 0;
 
     List<GameObject> _spawnedItems = new List<GameObject>();
 
@@ -30,6 +34,11 @@ public class CarouselManager : MonoBehaviour
             //Cerrar inventario y desactivar carousel
             if (Input.GetKeyDown(KeyCode.I))
               CloseCarousel();
+            //Navegar por el carousel
+            if (Input.GetKeyDown(KeyCode.A))
+                NavigateCarousel(-1);
+            if (Input.GetKeyDown(KeyCode.D))
+                NavigateCarousel(1);
         }
 
     }
@@ -47,7 +56,8 @@ public class CarouselManager : MonoBehaviour
         {
             var item = _inventory._inventorySlot[i];
             Vector3 pos = CarouselLayout.GetPositionForIndex(i, _inventory._inventorySlot.Count, dynamicRadius);
-            GameObject spawnItem = Instantiate(_placeholderPrefab, transform);
+            GameObject spawnItem = Instantiate(_placeholderPrefab, _carouselRing);
+            spawnItem.AddComponent<ItemShowcaseRotation>();
             spawnItem.transform.localPosition = pos;
             spawnItem.transform.localRotation = Quaternion.identity;
             spawnItem.layer = LayerMask.NameToLayer("Carousel");
@@ -75,12 +85,16 @@ public class CarouselManager : MonoBehaviour
 
     void CloseCarousel()
     {
-        ClearInventorySlot();
+        StartCoroutine(CloseAnimation(Camera.main.transform.position + Camera.main.transform.forward * _distanceFromCamera * 2f));
         _isOpen = false;
-        FirstPersonController.THIS.enabled = true;
-        FirstPersonController.THIS.GetComponent<CharacterController>().enabled = true;
-        Cursor.visible = false;
-        Cursor.lockState = CursorLockMode.Locked;
+    }
+
+    void NavigateCarousel(int direction)
+    {   
+        int totalItems = _inventory._inventorySlot.Count;
+        _currentIndex = (_currentIndex + direction + totalItems) % totalItems;
+        float angle = (360f / totalItems) * _currentIndex;
+        StartCoroutine(RotateCarousel(_carouselRing.localRotation, Quaternion.Euler(0, angle, 0), 0.5f));
     }
 
     IEnumerator OpenAnimation(Vector3 startPos, Vector3 targetPos)
@@ -104,5 +118,42 @@ public class CarouselManager : MonoBehaviour
 
         transform.position = targetPos;
         transform.localScale = Vector3.one;
+    }
+
+    IEnumerator CloseAnimation(Vector3 targetPos)
+    {
+        float duration = 0.5f;
+        float elapsed = 0f;
+        Vector3 startPos = transform.position;
+
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            float progress = elapsed / duration;
+            transform.position = Vector3.Lerp(startPos, targetPos, progress);
+            transform.localScale = Vector3.Lerp(Vector3.one, Vector3.zero, progress);
+            yield return null;
+        }
+
+        transform.position = targetPos;
+        transform.localScale = Vector3.zero;
+        ClearInventorySlot();
+        FirstPersonController.THIS.enabled = true;
+        FirstPersonController.THIS.GetComponent<CharacterController>().enabled = true;
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
+    }
+
+    IEnumerator RotateCarousel(Quaternion startRotation, Quaternion targetRotation, float duration)
+    {
+        float elapsed = 0f;
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            float progress = elapsed / duration;
+            _carouselRing.localRotation = Quaternion.Slerp(startRotation, targetRotation, progress);
+            yield return null;
+        }
+        _carouselRing.localRotation = targetRotation;
     }
 }
