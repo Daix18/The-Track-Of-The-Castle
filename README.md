@@ -9,4 +9,5 @@ El jugador debe resolver una serie de puzzles y leer notas repartidas por la hab
 ## Tecnologías
 
 • Motor: Unity (3D, primera persona)
+
 • Lenguaje: C#
